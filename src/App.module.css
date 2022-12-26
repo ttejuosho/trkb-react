@@ -1,0 +1,16 @@
+.required:before {
+  content: "*";
+  font-weight: bold;
+  color: red;
+  margin-right: 0.2em;
+}
+
+.iForgotLink {
+  text-decoration: none;
+  color: black;
+  font-weight: 400;
+}
+
+.floatRight {
+  float: right;
+}

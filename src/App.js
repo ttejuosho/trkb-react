@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
+import SignIn from "./components/Auth/SignIn";
+import SignUp from "./components/Auth/SignUp";
+import ForgotPassword from "./components/Auth/ForgotPassword";
+import Register from "./components/Auth/Register";
+import Home from "./components/Home/Home";
+import AuthProvider from "./providers/authProvider";
+import NewLocation from "./components/Auth/NewLocation";
+import ResetPassword from "./components/Auth/ResetPassword";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AuthProvider>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/iforgot" element={<ForgotPassword />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/location" element={<NewLocation />} />
+          <Route
+            path="/resetPassword/:resetPasswordToken"
+            element={<ResetPassword />}
+          />
+        </Routes>
+        <Footer />
+      </AuthProvider>
     </div>
   );
 }
