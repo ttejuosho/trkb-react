@@ -7,7 +7,7 @@ const Footer = () => {
     <>
       <Navbar fixed="bottom" bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand>Taiwo Tejuosho 2022</Navbar.Brand>
+          <Navbar.Brand>Taiwo Tejuosho 2023</Navbar.Brand>
         </Container>
       </Navbar>
     </>
