@@ -10,7 +10,7 @@ const Header = () => {
     <>
       <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand href="#home">ToroKobo</Navbar.Brand>
+          <Navbar.Brand href="/">ToroKobo</Navbar.Brand>
           <Nav className="justify-content-end">
             {!token ? (
               <>

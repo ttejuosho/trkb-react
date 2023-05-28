@@ -33,11 +33,14 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 const sendEmail = require("../services/email/email.js");
+const { start } = require("repl");
 
 module.exports = (app) => {
   app.get("/api/getTransactions", (req, res) => {
     db.Transaction.findAll({
-      attributes: { exclude: ["transactionId", "createdAt", "updatedAt"] },
+      attributes: {
+        exclude: ["transactionId", "createdAt", "updatedAt"],
+      },
     }).then((dbTransaction) => {
       res.json(dbTransaction);
     });
@@ -310,22 +313,43 @@ module.exports = (app) => {
     const requestStart = Date.now();
 
     if (searchBy !== "All") {
-      queryObj[searchBy] = { [Op.like]: "%" + searchQuery + "%" };
+      queryObj[searchBy] = {
+        [Op.like]: "%" + searchQuery + "%",
+      };
     } else {
       queryObj = {
-        transactionUID: { [Op.like]: "%" + searchQuery + "%" },
-        locationUID: { [Op.like]: "%" + searchQuery + "%" },
-        transactionTerminal: { [Op.like]: "%" + searchQuery + "%" },
-        transactionType: { [Op.like]: "%" + searchQuery + "%" },
-        customerName: { [Op.like]: "%" + searchQuery + "%" },
-        customerEmail: { [Op.like]: "%" + searchQuery + "%" },
-        customerPhone: { [Op.like]: "%" + searchQuery + "%" },
-        preparedBy: { [Op.like]: "%" + searchQuery + "%" },
+        transactionUID: {
+          [Op.like]: "%" + searchQuery + "%",
+        },
+        locationUID: {
+          [Op.like]: "%" + searchQuery + "%",
+        },
+        transactionTerminal: {
+          [Op.like]: "%" + searchQuery + "%",
+        },
+        transactionType: {
+          [Op.like]: "%" + searchQuery + "%",
+        },
+        customerName: {
+          [Op.like]: "%" + searchQuery + "%",
+        },
+        customerEmail: {
+          [Op.like]: "%" + searchQuery + "%",
+        },
+        customerPhone: {
+          [Op.like]: "%" + searchQuery + "%",
+        },
+        preparedBy: {
+          [Op.like]: "%" + searchQuery + "%",
+        },
       };
     }
 
     db.Transaction.findAll({
-      where: { companyUID: res.locals.companyUID, [Op.or]: queryObj },
+      where: {
+        companyUID: res.locals.companyUID,
+        [Op.or]: queryObj,
+      },
     })
       .then((dbTransaction) => {
         if (dbTransaction.length > 0) {
@@ -449,7 +473,9 @@ module.exports = (app) => {
             res.json(err);
           });
       } else {
-        res.status(404).json({ error: "Company Id is invalid." });
+        res.status(404).json({
+          error: "Company Id is invalid.",
+        });
       }
     });
   });
@@ -725,10 +751,14 @@ module.exports = (app) => {
               return res.status(200).json(response);
             })
             .catch((err) => {
-              res.status(500).json({ error: err.errors[0].message });
+              res.status(500).json({
+                error: err.errors[0].message,
+              });
             });
         } else {
-          return res.status(400).json({ error: "Location already exists" });
+          return res.status(400).json({
+            error: "Location already exists",
+          });
         }
       }
     }
@@ -840,7 +870,9 @@ module.exports = (app) => {
     } else {
       return res.json({
         errors: [
-          { message: "Error: You are not authorized to perform action." },
+          {
+            message: "Error: You are not authorized to perform action.",
+          },
         ],
       });
     }
@@ -872,7 +904,9 @@ module.exports = (app) => {
     } else {
       return res.json({
         errors: [
-          { message: "Error: You are not authorized to perform this action." },
+          {
+            message: "Error: You are not authorized to perform this action.",
+          },
         ],
       });
     }
@@ -902,7 +936,9 @@ module.exports = (app) => {
     } else {
       return res.json({
         errors: [
-          { message: "Error: You are not authorized to perform this action." },
+          {
+            message: "Error: You are not authorized to perform this action.",
+          },
         ],
       });
     }
@@ -924,7 +960,9 @@ module.exports = (app) => {
     } else {
       return res.json({
         errors: [
-          { message: "Error: You are not authorized to perform this action." },
+          {
+            message: "Error: You are not authorized to perform this action.",
+          },
         ],
       });
     }
@@ -969,7 +1007,10 @@ module.exports = (app) => {
           }
         );
         if (data.length > 0) {
-          var result = { Location: {}, Transactions: [] };
+          var result = {
+            Location: {},
+            Transactions: [],
+          };
           result.Location.locationId = data[0].locationId;
           result.Location.locationUID = data[0].locationUID;
           result.Location.locationName = data[0].locationName;
@@ -1298,12 +1339,12 @@ module.exports = (app) => {
     "/api/autoTracker/tracker/:customerId/:trackerId",
     authenticate,
     async (req, res) => {
-      db.Tracker.destroy({ where: { trackerId: req.params.trackerId } }).then(
-        (dbTracker) => {
-          console.log(dbTracker);
-          res.json(dbTracker);
-        }
-      );
+      db.Tracker.destroy({
+        where: { trackerId: req.params.trackerId },
+      }).then((dbTracker) => {
+        console.log(dbTracker);
+        res.json(dbTracker);
+      });
     }
   );
 
@@ -1725,7 +1766,9 @@ module.exports = (app) => {
 
         if (exp) {
           db.Expense.update(expenseData, {
-            where: { expenseId: req.params.expenseId },
+            where: {
+              expenseId: req.params.expenseId,
+            },
           }).then((dbExpense) => {
             res.json(dbExpense);
           });
@@ -2121,7 +2164,9 @@ module.exports = (app) => {
         },
       }).then((dbUser) => {
         if (dbUser === null) {
-          return res.status(400).json({ emailAddressError: "Email not found" });
+          return res.status(400).json({
+            emailAddressError: "Email not found",
+          });
         }
         const userInfo = {
           name: dbUser.dataValues.name,
@@ -2210,9 +2255,9 @@ module.exports = (app) => {
           },
         }).then((dbUser) => {
           if (dbUser === null) {
-            return res
-              .status(400)
-              .json({ error: "Invalid Token, Please request a new token" });
+            return res.status(400).json({
+              error: "Invalid Token, Please request a new token",
+            });
           }
           if (
             dbUser.dataValues.resetPasswordExpires > Date.now() &&
@@ -2252,15 +2297,367 @@ module.exports = (app) => {
                 subject,
                 dbUser.dataValues.emailAddress
               );
-              return res
-                .status(200)
-                .json({ error: "Password has been reset. You can now log in" });
+              return res.status(200).json({
+                error: "Password has been reset. You can now log in",
+              });
             });
           } else {
-            res.status(400).json({ error: "Password reset token expired." });
+            res.status(400).json({
+              error: "Password reset token expired.",
+            });
           }
         });
       }
+    }
+  );
+
+  app.get("/api/options/getCalls", async (req, res) => {
+    db.OptionCall.findAll().then((dbOptionCalls) => {
+      res.json(dbOptionCalls);
+    });
+  });
+
+  app.get("/api/options/getCallById/:callId", async (req, res) => {
+    db.OptionCall.findOne(req.param.callId).then((dbOptionCall) => {
+      res.json(dbOptionCall);
+    });
+  });
+
+  app.get("/api/options/getCallsByTicker/:ticker", async (req, res) => {
+    db.OptionCall.findAll({
+      where: {
+        ticker: req.params.ticker,
+      },
+    }).then((dbOptionCalls) => {
+      res.json(dbOptionCalls);
+    });
+  });
+
+  app.get(
+    "/api/options/getCallsByContractSymbol/:contractSymbol",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        where: {
+          contractSymbol: req.params.contractSymbol,
+        },
+      }).then((dbOptionCalls) => {
+        res.json(dbOptionCalls);
+      });
+    }
+  );
+
+  //Expiration Date
+  app.get("/api/options/getCallsThatExpireOn/:thisDate", async (req, res) => {
+    db.OptionCall.findAll({
+      where: {
+        exp_date: moment.utc(req.params.thisDate, "YYYY-MM-DD"),
+      },
+    }).then((dbOptionCall) => {
+      res.json(dbOptionCall);
+    });
+  });
+
+  app.get("/api/options/getCallsExpiringBy/:thisDate", async (req, res) => {
+    const ACCEPT_FORMAT = "YYYY-MM-DD";
+    const start_date = Date.now;
+    const end_date = req.params.thisDate;
+    const start = moment.utc(start_date, ACCEPT_FORMAT);
+    const end = moment.utc(end_date, ACCEPT_FORMAT);
+    db.OptionCall.findAll({
+      where: {
+        exp_date: {
+          [Op.between]: [start, end],
+        },
+      },
+    }).then((dbOptionCalls) => {
+      res.json(dbOptionCalls);
+    });
+  });
+
+  app.get(
+    "/api/options/getCallsExpiringBetween/:startDate/:endDate",
+    async (req, res) => {
+      // Date Format 2020-08-30T15:10:36.000Z
+      const ACCEPT_FORMAT = "YYYY-MM-DD";
+      const start_date = req.params.startDate;
+      const end_date = req.params.endDate;
+      const start = moment.utc(start_date, ACCEPT_FORMAT);
+      const end = moment.utc(end_date, ACCEPT_FORMAT);
+
+      db.OptionCall.findAll({
+        where: {
+          exp_date: {
+            [Op.between]: [start, end],
+          },
+        },
+      })
+        .then((dbOptionCalls) => {
+          res.json(dbOptionCalls);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  );
+
+  // Bid
+  app.get("/api/options/getCallsWithBidUnder/:thisBid", async (req, res) => {
+    db.OptionCall.findAll({
+      where: {
+        bid: {
+          [Op.lte]: req.params.thisBid,
+        },
+      },
+    }).then((dbOptionCall) => {
+      res.json(dbOptionCall);
+    });
+  });
+
+  app.get("/api/options/getCallsWithBidOver/:thisBid", async (req, res) => {
+    db.OptionCall.findAll({
+      where: {
+        bid: {
+          [Op.gte]: req.params.thisBid,
+        },
+      },
+    }).then((dbOptionCall) => {
+      res.json(dbOptionCall);
+    });
+  });
+
+  app.get(
+    "/api/options/getCallsWithBidBetween/:thisBid/:andThatBid",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        where: {
+          bid: {
+            [Op.between]: [req.params.thisBid, req.params.andThatBid],
+          },
+        },
+      }).then((dbOptionCalls) => {
+        res.json(dbOptionCalls);
+      });
+    }
+  );
+
+  // Strike Price
+  app.get(
+    "/api/options/getCallsWithStrikePriceUnder/:thisStrike",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        where: {
+          strike: {
+            [Op.lte]: req.params.thisStrike,
+          },
+        },
+      }).then((dbOptionCalls) => {
+        res.json(dbOptionCalls);
+      });
+    }
+  );
+
+  app.get(
+    "/api/options/getCallsWithStrikePriceOver/:thisStrike",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        where: {
+          strike: {
+            [Op.gte]: req.params.thisStrike,
+          },
+        },
+      }).then((dbOptionCall) => {
+        res.json(dbOptionCall);
+      });
+    }
+  );
+
+  app.get(
+    "/api/options/getCallsWithStrikePriceBetween/:thisStrike/:andThatStrike",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        where: {
+          strike: {
+            [Op.between]: [req.params.thisStrike, req.params.andThatStrike],
+          },
+        },
+      }).then((dbOptionCall) => {
+        res.json(dbOptionCall);
+      });
+    }
+  );
+
+  // Implied Volatility
+  app.get(
+    "/api/options/getCallsWithImpliedVolatilityUnder/:thisImpliedVolatility",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        where: {
+          impliedVolatility: {
+            [Op.lte]: req.params.thisImpliedVolatility,
+          },
+        },
+      }).then((dbOptionCalls) => {
+        res.json(dbOptionCalls);
+      });
+    }
+  );
+
+  app.get(
+    "/api/options/getCallsWithImpliedVolatilityOver/:thisImpliedVolatility",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        where: {
+          impliedVolatility: {
+            [Op.gte]: req.params.thisImpliedVolatility,
+          },
+        },
+      }).then((dbOptionCall) => {
+        res.json(dbOptionCall);
+      });
+    }
+  );
+
+  app.get(
+    "/api/options/getCallsWithImpliedVolatilityBetween/:thisImpliedVolatility/:andThatImpliedVolatility",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        where: {
+          impliedVolatility: {
+            [Op.between]: [
+              req.params.thisImpliedVolatility,
+              req.params.andThatImpliedVolatility,
+            ],
+          },
+        },
+      }).then((dbOptionCall) => {
+        res.json(dbOptionCall);
+      });
+    }
+  );
+
+  //Options Price
+  app.get(
+    "/api/options/getCallsWithPriceUnder/:thisPrice",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        order: [["strike", "ASC"]],
+      }).then((dbTickers) => {
+        res.json(
+          dbTickers.filter((s) => {
+            if (s.strike * 100 < req.params.thisPrice) {
+              return s;
+            }
+          })
+        );
+      });
+    }
+  );
+
+  app.get("/api/options/getCallsWithPriceOver/:thisPrice", async (req, res) => {
+    db.OptionCall.findAll({
+      order: [["strike", "ASC"]],
+    }).then((dbTickers) => {
+      res.json(
+        dbTickers.filter((s) => {
+          if (s.strike * 100 > req.params.thisPrice) {
+            return s;
+          }
+        })
+      );
+    });
+  });
+
+  app.get(
+    "/api/options/getCallsWithPriceBetween/:thisPrice/:andThatPrice",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        order: [["strike", "ASC"]],
+      }).then((dbTickers) => {
+        res.json(
+          dbTickers.filter((s) => {
+            if (
+              s.strike >= req.params.thisPrice / 100 &&
+              s.strike <= req.params.andThatPrice / 100
+            ) {
+              return s;
+            }
+          })
+        );
+      });
+    }
+  );
+
+  app.get("/api/options/getTickers", async (req, res) => {
+    db.OptionCall.findAll({
+      attributes: [
+        [Sequelize.fn("DISTINCT", Sequelize.col("ticker")), "ticker"],
+      ],
+      order: [["ticker", "ASC"]],
+    }).then((dbTickers) => {
+      res.json(dbTickers);
+    });
+  });
+
+  // UOA Endpoint
+  //Gets total volume for a Contract Symbol for a specified date
+  app.get("/api/options/uoa/:date", async (req, res) => {
+    db.OptionCall.findAll({
+      attributes: [
+        [
+          Sequelize.fn("DISTINCT", Sequelize.col("contractSymbol")),
+          "contractSymbol",
+        ],
+      ],
+      where: {
+        ts: {
+          [Op.like]: `%${req.params.date}%`,
+        },
+      },
+      raw: true,
+    }).then(async (dbContractSymbols) => {
+      let data = [];
+      for (let i = 0; i < dbContractSymbols.length; i++) {
+        const tv = await db.OptionCall.findAll({
+          attributes: [
+            [Sequelize.col("contractSymbol"), "contractSymbol"],
+            [Sequelize.fn("sum", Sequelize.col("volume")), "volume"],
+          ],
+          where: {
+            contractSymbol: dbContractSymbols[i].contractSymbol,
+            ts: {
+              [Op.like]: `%${req.params.date}%`,
+            },
+          },
+          raw: true,
+        });
+        data.push(tv[0]);
+      }
+      await res.json(data);
+    });
+  });
+
+  //Gets Volume for a specified contract on a specified date
+  app.get(
+    "/api/options/getVolumeBy/:contractSymbol/:onThisDate",
+    async (req, res) => {
+      db.OptionCall.findAll({
+        attributes: [
+          [Sequelize.col("contractSymbol"), "contractSymbol"],
+          [Sequelize.fn("sum", Sequelize.col("volume")), "volume"],
+        ],
+        where: {
+          contractSymbol: req.params.contractSymbol,
+          ts: {
+            [Op.like]: `%${req.params.onThisDate}%`,
+          },
+        },
+        raw: true,
+      }).then((data) => {
+        if (data[0].volume === null) {
+          data[0].volume = 0;
+        }
+        res.json(data);
+      });
     }
   );
 };
